@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
 const path = require("path");
-const Anthropic = require("@anthropic-ai/sdk");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 require("dotenv").config();
 
 const app = express();
@@ -18,7 +18,7 @@ app.use(express.json());
 // Serve built React frontend
 app.use(express.static(path.join(__dirname, "../client/dist")));
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 app.post("/api/analyze", upload.fields([{ name: "person" }, { name: "clothing" }]), async (req, res) => {
   try {
