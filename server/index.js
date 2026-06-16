@@ -47,7 +47,7 @@ Analyze whether the color complements the person's skin tone and if the design m
 RECOMMENDATION:
 Suggest specific ways to style this item - bottoms, shoes, accessories, and occasions. Be encouraging and specific.`;
 
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
 
 const result = await model.generateContent([
   prompt,
