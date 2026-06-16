@@ -47,20 +47,15 @@ Analyze whether the color complements the person's skin tone and if the design m
 RECOMMENDATION:
 Suggest specific ways to style this item - bottoms, shoes, accessories, and occasions. Be encouraging and specific.`;
 
-    const message = await client.messages.create({
-      model: "claude-opus-4-6",
-      max_tokens: 1024,
-      messages: [{
-        role: "user",
-        content: [
-          { type: "image", source: { type: "base64", media_type: getMime(personFile), data: toBase64(personFile.buffer) } },
-          { type: "image", source: { type: "base64", media_type: getMime(clothingFile), data: toBase64(clothingFile.buffer) } },
-          { type: "text", text: prompt }
-        ]
-      }]
-    });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    const text = message.content.map(b => b.text || "").join("\n");
+const result = await model.generateContent([
+  prompt,
+  { inlineData: { mimeType: getMime(personFile), data: toBase64(personFile.buffer) } },
+  { inlineData: { mimeType: getMime(clothingFile), data: toBase64(clothingFile.buffer) } },
+]);
+
+const text = result.response.text();
     res.json({ analysis: text });
 
   } catch (err) {
