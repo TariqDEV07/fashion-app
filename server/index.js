@@ -2,7 +2,6 @@ const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
 const path = require("path");
-const { GoogleGenerativeAI } = require("@google/generative-ai");
 require("dotenv").config();
 
 const app = express();
@@ -14,11 +13,7 @@ app.use(cors({
   allowedHeaders: ['Content-Type']
 }));
 app.use(express.json());
-
-// Serve built React frontend
 app.use(express.static(path.join(__dirname, "../client/dist")));
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 app.post("/api/analyze", upload.fields([{ name: "person" }, { name: "clothing" }]), async (req, res) => {
   try {
@@ -32,7 +27,13 @@ app.post("/api/analyze", upload.fields([{ name: "person" }, { name: "clothing" }
     const toBase64 = (buf) => buf.toString("base64");
     const getMime = (file) => file.mimetype;
 
-    const prompt = `You are an expert AI fashion stylist. You have been given two images:
+    const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + process.env.GEMINI_API_KEY, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{
+          parts: [
+            { text: `You are an expert AI fashion stylist. You have been given two images:
 1. A photo of a person
 2. A photo of a clothing item
 
@@ -45,17 +46,16 @@ COLOR & DESIGN SUITABILITY:
 Analyze whether the color complements the person's skin tone and if the design matches their style.
 
 RECOMMENDATION:
-Suggest specific ways to style this item - bottoms, shoes, accessories, and occasions. Be encouraging and specific.`;
+Suggest specific ways to style this item - bottoms, shoes, accessories, and occasions. Be encouraging and specific.` },
+            { inlineData: { mimeType: getMime(personFile), data: toBase64(personFile.buffer) } },
+            { inlineData: { mimeType: getMime(clothingFile), data: toBase64(clothingFile.buffer) } }
+          ]
+        }]
+      })
+    });
 
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
-
-const result = await model.generateContent([
-  prompt,
-  { inlineData: { mimeType: getMime(personFile), data: toBase64(personFile.buffer) } },
-  { inlineData: { mimeType: getMime(clothingFile), data: toBase64(clothingFile.buffer) } },
-]);
-
-const text = result.response.text();
+    const data = await response.json();
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "Analysis failed.";
     res.json({ analysis: text });
 
   } catch (err) {
@@ -64,12 +64,9 @@ const text = result.response.text();
   }
 });
 
-app.get("/health", (_, res) => res.json({ status: "ok" }));
-
-// All other routes → React app
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../client/dist/index.html"));
 });
 
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => console.log(`✅ Server running on http://localhost:${PORT}`));
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
