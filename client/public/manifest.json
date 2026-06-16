@@ -1,0 +1,50 @@
+{
+  "name": "StyleSense AI - Fashion Stylist",
+  "short_name": "StyleSense",
+  "description": "AI-powered virtual fashion stylist",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f0f0f",
+  "theme_color": "#C0392B",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icons/icon-72.png",
+      "sizes": "72x72",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["lifestyle", "shopping", "fashion"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Analyze Outfit",
+      "short_name": "Analyze",
+      "description": "Start a new outfit analysis",
+      "url": "/",
+      "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96" }]
+    }
+  ]
+}
