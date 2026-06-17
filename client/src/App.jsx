@@ -110,8 +110,9 @@ export default function App() {
       formData.append("person", person.file);
       formData.append("clothing", clothing.file);
       const res = await fetch(`${import.meta.env.VITE_API_URL}/api/analyze`, { method: "POST", body: formData });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Analysis failed.");
+      const text = await res.text();
+const data = JSON.parse(text);
+if (!res.ok) throw new Error(data.error || "Analysis failed.");
       setResult(parseAnalysis(data.analysis));
     } catch (err) {
       setError(err.message);
