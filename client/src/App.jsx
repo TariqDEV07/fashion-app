@@ -124,7 +124,7 @@ if (!res.ok) throw new Error(data.error || "Analysis failed.");
   return (
     <div className="app">
       <header className="header">
-        <div className="logo">👗</div>
+        <div className="logo">👔</div>
         <div className="header-text">
           <div className="logo-text">StyleSense AI</div>
           <div className="logo-sub">Virtual Fashion Stylist</div>
